@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160215234401) do
+ActiveRecord::Schema.define(version: 20160216124733) do
 
   create_table "distances", force: :cascade do |t|
     t.integer  "point_id"
@@ -35,6 +35,16 @@ ActiveRecord::Schema.define(version: 20160215234401) do
     t.decimal  "tariff",       precision: 8, scale: 2
     t.datetime "created_at",                           null: false
     t.datetime "updated_at",                           null: false
+  end
+
+  create_table "shedules", force: :cascade do |t|
+    t.integer  "point_id"
+    t.integer  "route_id"
+    t.time     "breack"
+    t.boolean  "first_point", default: false
+    t.boolean  "last_point",  default: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
 end

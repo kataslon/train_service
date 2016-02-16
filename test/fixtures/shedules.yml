@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  point_id: 1
+  route_id: 1
+  breack: 2016-02-16 14:47:33
+  first_point: false
+  last_point: false
+
+two:
+  point_id: 1
+  route_id: 1
+  breack: 2016-02-16 14:47:33
+  first_point: false
+  last_point: false
