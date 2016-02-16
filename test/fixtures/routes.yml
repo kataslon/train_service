@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  speed: 1
+  places_count: 1
+  daparture: 2016-02-16 01:24:02
+  tariff: 1
+
+two:
+  name: MyString
+  speed: 1
+  places_count: 1
+  daparture: 2016-02-16 01:24:02
+  tariff: 1
