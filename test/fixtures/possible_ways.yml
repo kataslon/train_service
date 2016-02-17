@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  point_id: 1
+  target_point: 1
+  track_array: 
+
+two:
+  point_id: 1
+  target_point: 1
+  track_array: 
