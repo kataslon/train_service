@@ -10,6 +10,7 @@ require 'carrierwave/orm/activerecord'
       content = CSV.parse(File.read("#{Rails.root}/public#{file.url}"))
       file_mapper(content, params[:route_upload][:route_id])
       choose_nodes
+      possible_ways
       redirect_to routes_path
     end
 
@@ -40,13 +41,19 @@ require 'carrierwave/orm/activerecord'
     end
 
     def clean_old_shedules(route_id)
-      Shedule.where(id: route_id).each do |shedule|
+      Shedule.where(route_id: route_id).each do |shedule|
         shedule.delete
       end
     end
 
     def clean_old_nodes
       Node.all.each do |node|
+        node.delete
+      end
+    end
+
+    def clean_old_possible_ways
+      PossibleWay.all.each do |node|
         node.delete
       end
     end
@@ -68,9 +75,64 @@ require 'carrierwave/orm/activerecord'
     def choose_nodes
       clean_old_nodes
       nodes_array.each do |node|
-        neighbor_array =  Distance.where(point_id: node).pluck(:neighbor_id) + Distance.where(neighbor_id: node).pluck(:point_id)
+        neighbor_nodes_array = nodes_array
+        neighbor_nodes_array.delete(node)
+        neighbor_array = []
+        neighbor_nodes_array.each do |neighbor_node|
+          if Shedule.where(point_id: node).pluck(:route_id) & Shedule.where(point_id: neighbor_node).pluck(:route_id) != []
+            neighbor_array.push(neighbor_node)
+          end
+        end
         Node.create(point_id: node, naighbors_array: neighbor_array.uniq.sort)
       end
+
+    end
+
+    def possible_ways
+      clean_old_possible_ways
+      Node.all.each do |node|
+        goals = Node.all.to_a
+        @start = node.point_id
+        goals.delete(node)
+        goals.each do |goal|
+          tracks(@start, node.point_id, goal.point_id)
+        end
+      end
+    end
+
+    def graph(start, start_point, finish_point, track_init)
+      current_point = Node.where(point_id: start_point).first
+      neighbors = string_to_array(current_point.naighbors_array)
+      if neighbors.include?(finish_point) && start_point == @start
+        PossibleWay.create(point_id: @start, target_point: finish_point, track_array: [start_point, finish_point])
+      end
+      neighbors.each do |neighbor|
+        track = []
+        track += track_init
+        unless track.include?(neighbor)
+          track << neighbor
+          if neighbor == finish_point && start_point != @start
+            PossibleWay.create(point_id: @start, target_point: finish_point, track_array: track)
+          else
+            graph(@start, neighbor, finish_point, track)
+          end
+        end
+      end
+    end
+
+    def tracks(start, start_point, finish_point)
+      graph(start, start_point, finish_point, [start_point])
+    end
+
+    def string_to_array(string)
+      string.delete! "["
+      string.delete! "]"
+      string = string.split(", ")
+      array = []
+      string.each do |l|
+        array.push(l.to_i)
+      end
+      array
     end
 
     protected
