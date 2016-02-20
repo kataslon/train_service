@@ -85,7 +85,6 @@ require 'carrierwave/orm/activerecord'
         end
         Node.create(point_id: node, naighbors_array: neighbor_array.uniq.sort)
       end
-
     end
 
     def possible_ways
