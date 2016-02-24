@@ -1,4 +1,4 @@
-<%= form_for @route.route_uploads.build do |f| %>
+<%= form_for [@route, RouteUpload.new] do |f| %>
   <%= f.hidden_field :route_id, :value => @route.id %>
   <%= f.file_field :route_file %>
   <%= f.submit %>

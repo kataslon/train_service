@@ -1,7 +1,4 @@
 class Route < ActiveRecord::Base
-  has_many :route_uploads
+  has_one :route_upload
   has_many :shedules
-
-  mount_uploader :route_file, RouteFileUploader
-
 end
