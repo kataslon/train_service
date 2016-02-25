@@ -1,0 +1,7 @@
+<%= form_for @route_references, method: :get do |f| %>
+  <%= f.label :start_point %>
+  <%= f.text_field :start_point %>
+  <%= f.label :goal_point %>
+  <%= f.text_field :goal_point %>
+  <%= f.submit 'ok' %>
+<% end %>

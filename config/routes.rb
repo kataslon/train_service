@@ -3,8 +3,8 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'route_references#new'
-  root 'routes#index'
+  root 'route_references#new'
+  # root 'routes#index'
 
 
   # Example of regular route:
@@ -59,6 +59,7 @@ Rails.application.routes.draw do
   resources :routes do
     resources :route_uploads
   end
-  # resources :route_references
+
+  resources :route_references
 
 end
