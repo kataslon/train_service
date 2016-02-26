@@ -10,13 +10,12 @@ class RouteReferencesController < ::ApplicationController
   end
 
   def show
-    @route_reference = @references[params(track_id)]
+    @route_reference = PossibleWay.find(params[:id])
   end
 
   def index
-    @route_references = RouteReference.new(reference_params)
-    # @route_references.prepare_routes
-    render text: @route_references.prepare_routes.to_s
+    @route = RouteReference.new(reference_params)
+    @route_references = RouteReference.new(reference_params).prepare_routes
   end
 
   protected

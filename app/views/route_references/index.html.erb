@@ -1,0 +1,7 @@
+start_point : <%= @route.start_point %></br>
+goal_point : <%= @route.goal_point %></br></br>
+<% @route_references.each do |route| %>
+  <%= route_points(route[1][0]) %></br>
+  <%= route[1][1] %>
+  <%= link_to 'Details', route_reference_path(route[0]) %></br></br>
+<% end %>

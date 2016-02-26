@@ -10,34 +10,36 @@ class RouteReference
   end
 
   def prepare_routes
-    i = 0
     track = track_build(start_point, goal_point)
     tracks = {}
     tracks.push(track) if track
-    start_nodes(start_point).each do |start_node|
+    neighbor_nodes(start_point).each do |start_node|
       start_track = []
       new_track = track_build(start_point, start_node)
       start_track = start_track + new_track
-      nodes_in_route(goal_point).each do |goal_node|
-        node_tracks = PossibleWay.where(point_id: start_node, target_point: goal_node).pluck(:track_array)
-        node_tracks.each do |node_track|
+      neighbor_nodes(goal_point).each do |goal_node|
+        byebug
+        PossibleWay.where(point_id: start_node, target_point: goal_node).each do |node_track|
           track = []
           route_array = []
-          route_array.push(string_to_array(node_track))
+          route_array.push(string_to_array(node_track.track_array))
           track_between_nodes = []
-          node_track = string_to_array(node_track)
-          (1..node_track.count-1).each do |i|
-            track_between_nodes.push(track_build(node_track[i - 1], node_track[i]))
+          node_track_array = string_to_array(node_track.track_array)
+          (1..node_track_array.count-1).each do |i|
+            track_between_nodes.push(track_build(node_track_array[i - 1], node_track_array[i]))
           end
           track_between_nodes.push(track_build(goal_node, goal_point)).uniq
           total_track = clean((start_track + track + track_between_nodes).flatten.uniq, goal_point)
           route_array.push(total_track)
-          tracks[i] = route_array
-          i += 1
+          tracks[node_track.id] = route_array
         end
       end
     end
     tracks
+  end
+
+  def current_route(id)
+    self.prepare_routes[id]
   end
 
   protected
@@ -119,20 +121,18 @@ class RouteReference
   end
 
   def point_position_array(point_id)
-    byebug
     route_id = Shedule.where(point_id: point_id).first.route_id
-    current_point = Shedule.where(first_point: true, route_id: route_id).first.point_id
+    points_array = Shedule.where(route_id: route_id).pluck(:point_id)
     array = []
-    while !Shedule.where(point_id: current_point, route_id: route_id).first.last_point
-      if current_point == point_id or nodes_in_route(current_point).include?(current_point)
-        array.push(current_point)
+    points_array.each do |point|
+      if point == point_id or nodes_in_route(point).include?(point)
+        array.push(point)
       end
-      current_point = Distance.where(neighbor_id: current_point).first.point_id
     end
     array
   end
 
-  def start_nodes(point)
+  def neighbor_nodes(point)
     array = point_position_array(point)
     if array.first == point
       start_nodes_array = [array[1]]
