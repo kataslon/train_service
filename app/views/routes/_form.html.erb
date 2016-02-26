@@ -1,0 +1,13 @@
+<%= form_for @route do |route| %>
+  <%= route.label :name %>
+  <%= route.text_field :name %>
+  <%= route.label :speed %>
+  <%= route.text_field :speed %>
+  <%= route.label :places_count %>
+  <%= route.text_field :places_count %>
+  <%= route.label :daparture %>
+  <%= route.text_field :daparture %>
+  <%= route.label :tariff %>
+  <%= route.text_field :tariff %>
+  <%= route.submit %>
+<% end %>
