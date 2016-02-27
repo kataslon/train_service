@@ -1,7 +1,14 @@
-start_point : <%= @route.start_point %></br>
-goal_point : <%= @route.goal_point %></br></br>
+</br>Пункт отправки : <%= @routes.start_point %></br>
+Пункт назначения : <%= @routes.goal_point %></br></br>
 <% @route_references.each do |route| %>
-  <%= route_points(route[1][0]) %></br>
-  <%= route[1][1] %>
-  <%= link_to 'Details', route_reference_path(route[0]) %></br></br>
+   Станции пересадок: <%= route_points(route[1][0]) %></br>
+   <%= route_points(route[1][1]) %>
+  <%= form_for @order do |f| %>
+    <%= f.hidden_field :user_id, value: current_user %>
+    <%= f.hidden_field :start_point, value: @routes.start_point %>
+    <%= f.hidden_field :goal_point, value: @routes.goal_point %>
+    <%= f.hidden_field :nodes_array, value: route[1][0] %>
+    <%= f.hidden_field :track_array, value: route[1][1] %>
+    <%= f.submit 'Заказать билет' %>
+  <% end %>
 <% end %>
