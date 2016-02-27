@@ -3,22 +3,22 @@ class RouteUpload < ActiveRecord::Base
 
   mount_uploader :route_file, RouteFileUploader
 
-  attr_accessor :route_id#, :route_file
+  attr_accessor :route_id
 
    # after :store, :create_routes
    before_save :create_routes
 
   protected
 
-  def create_routes
-    file = self.route_file
-    content = CSV.parse(File.read("#{Rails.root}/public#{file.url}"))
-    file_mapper(content, self.route_id)
-    choose_nodes
-    possible_ways
-  end
+    def create_routes
+      file = self.route_file
+      content = CSV.parse(File.read("#{Rails.root}/public#{file.url}"))
+      file_mapper(content, self.route_id)
+      choose_nodes
+      possible_ways
+    end
 
-      def file_mapper(content, route_id)
+    def file_mapper(content, route_id)
       clean_old_shedules(route_id)
       if Point.where(name: content[0][0]).blank?
         neighbor = Point.create(name: content[0][0])
@@ -35,7 +35,7 @@ class RouteUpload < ActiveRecord::Base
           point = Point.where(name: cont[0]).first
         end
         Shedule.create(point_id: point.id, route_id: route_id, breack: cont[2], first_point: false, last_point: false) #исправить на break
-        if Distance.where(point_id: point.id, neighbor_id: neighbor.id).blank?
+        if Distance.where(point_id: point.id, neighbor_id: neighbor.id).blank? & Distance.where(point_id: neighbor.id, neighbor_id: point.id).blank?
           Distance.create(point_id: point.id, neighbor_id: neighbor.id, distance: (cont[4].to_i - distance))
         end
         neighbor = point
