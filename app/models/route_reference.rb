@@ -15,31 +15,27 @@ class RouteReference
     tracks.push(track) if track
     neighbor_nodes(start_point).each do |start_node|
       start_track = []
-      new_track = track_build(start_point, start_node)
-      start_track = start_track + new_track
+      start_track = start_track + track_build(start_point, start_node)
       neighbor_nodes(goal_point).each do |goal_node|
-        byebug
         PossibleWay.where(point_id: start_node, target_point: goal_node).each do |node_track|
-          track = []
-          route_array = []
-          route_array.push(string_to_array(node_track.track_array))
-          track_between_nodes = []
           node_track_array = string_to_array(node_track.track_array)
-          (1..node_track_array.count-1).each do |i|
-            track_between_nodes.push(track_build(node_track_array[i - 1], node_track_array[i]))
+          unless node_track_array.include?(neighbor_nodes(goal_point)[0]) & node_track_array.include?(neighbor_nodes(goal_point)[1])
+            track = []
+            route_array = []
+            route_array.push(string_to_array(node_track.track_array))
+            track_between_nodes = []
+            (1..node_track_array.count-1).each do |i|
+                track_between_nodes.push(track_build(node_track_array[i - 1], node_track_array[i]))
+            end
+            track_between_nodes.push(track_build(goal_node, goal_point)).uniq
+            total_track = clean((start_track + track + track_between_nodes).flatten.uniq, goal_point)
+            route_array.push(total_track)
+            tracks[node_track.id] = route_array
           end
-          track_between_nodes.push(track_build(goal_node, goal_point)).uniq
-          total_track = clean((start_track + track + track_between_nodes).flatten.uniq, goal_point)
-          route_array.push(total_track)
-          tracks[node_track.id] = route_array
         end
       end
     end
     tracks
-  end
-
-  def current_route(id)
-    self.prepare_routes[id]
   end
 
   protected
