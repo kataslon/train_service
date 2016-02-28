@@ -1,0 +1,18 @@
+<h4>Поезд <%= point_name(route_part[0]) %> - <%= point_name(route_part[1]) %></h4>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Станция</th>
+      <th>Время прибытия</th>
+      <th>Время стоянки</th>
+      <th>Время отправки</th>
+      <th>Расстояние</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% route_shedule.each_value do |point_shedule| %>
+      <%= render 'train_shedule_row', point_shedule: point_shedule %>
+    <% end %>
+  </tbody>
+</table>
+</br>

@@ -6,16 +6,12 @@ class RouteReferencesController < ::ApplicationController
 
   def create
     @route_references = RouteReference.new(reference_params)
-
-  end
-
-  def show
-    @route_reference = PossibleWay.find(params[:id])
   end
 
   def index
-    @route = RouteReference.new(reference_params)
-    @route_references = RouteReference.new(reference_params).prepare_routes
+    @routes = RouteReference.new(reference_params)
+    @route_references = @routes.prepare_routes
+    @order = Order.new
   end
 
   protected

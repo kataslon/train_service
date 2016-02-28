@@ -12,7 +12,7 @@ class RouteReference
   def prepare_routes
     track = track_build(start_point, goal_point)
     tracks = {}
-    tracks.push(track) if track
+    tracks[0] = track if track
     neighbor_nodes(start_point).each do |start_node|
       start_track = []
       start_track = start_track + track_build(start_point, start_node)

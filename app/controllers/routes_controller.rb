@@ -13,7 +13,7 @@ class RoutesController < ::ApplicationController
   end
 
   def create
-    @route = RouteUpload.new(route_params)
+    @route = Route.create(route_params)
     redirect_to routes_path
   end
 
@@ -37,7 +37,7 @@ class RoutesController < ::ApplicationController
   def route_params
     params.require(:route).permit(:name,
                                   :speed,
-                                  :places_cout,
+                                  :places_count,
                                   :daparture,
                                   :tariff)
   end

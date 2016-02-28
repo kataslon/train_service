@@ -26,8 +26,8 @@ class RouteUpload < ActiveRecord::Base
         neighbor = Point.where(name: content[0][0]).first
       end
       Shedule.create(point_id: neighbor.id, route_id: route_id, breack: content[0][2], first_point: true, last_point: false)
-      content.shift
       distance = content[0][4].to_i
+      content.shift
       content.each do |cont|
         if Point.where(name: cont[0]).blank?
           point = Point.create(name: cont[0])
