@@ -50,9 +50,7 @@ class Order < ActiveRecord::Base
   end
 
   def route_shedule(point_array)
-    # byebug
     route_id = route_defining(point_array[0], point_array[1])[0]
-    # current_point = Shedule.where(route_id: route_id, first_point: true).first.point_id
     current_point = point_array[0]
     route_shedule = {}
     next_point = current_point
@@ -64,7 +62,6 @@ class Order < ActiveRecord::Base
     route_shedule[current_point] = point_data
     while next_point != point_array[1] && !Shedule.where(route_id: route_id, point_id: next_point).first.last_point
       point_data = {}
-      # next_point = Distance.where(neighbor_id: current_point).first.point_id
       next_points = Distance.where(neighbor_id: current_point).pluck(:point_id)
       next_points.each do |id|
         if Shedule.where(point_id: id).first.route_id == route_id
@@ -73,7 +70,6 @@ class Order < ActiveRecord::Base
         next_point = id if id == point_array[1]
       end
       point_data[:name] = Point.find(next_point).name
-      # byebug
       point_data[:distance] = Distance.where(neighbor_id: current_point, point_id: next_point).first.distance
       total_distance += point_data[:distance]
       point_data[:total_distance] = total_distance
@@ -106,7 +102,7 @@ class Order < ActiveRecord::Base
 
   end
 
-  def string_to_array(string) #дублируется, вынести в отдельный модуль
+  def string_to_array(string)
     string.delete! "["
     string.delete! "]"
     string = string.split(" ")

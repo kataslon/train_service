@@ -19,7 +19,7 @@ class RouteReference
       neighbor_nodes(goal_point).each do |goal_node|
         PossibleWay.where(point_id: start_node, target_point: goal_node).each do |node_track|
           node_track_array = string_to_array(node_track.track_array)
-          unless node_track_array.include?(neighbor_nodes(goal_point)[0]) & node_track_array.include?(neighbor_nodes(goal_point)[1])
+          if no_repeat_track?(node_track_array, start_point, goal_point)
             track = []
             route_array = []
             route_array.push(string_to_array(node_track.track_array))
@@ -28,7 +28,7 @@ class RouteReference
                 track_between_nodes.push(track_build(node_track_array[i - 1], node_track_array[i]))
             end
             track_between_nodes.push(track_build(goal_node, goal_point)).uniq
-            total_track = clean((start_track + track + track_between_nodes).flatten.uniq, goal_point)
+            total_track = (start_track + track + track_between_nodes).flatten.uniq
             route_array.push(total_track)
             tracks[node_track.id] = route_array
           end
@@ -109,8 +109,8 @@ class RouteReference
       end
     else
       while criterion_point(point) && point != goal_point
-        track.push(point)
         point = Distance.where(point_id: point).first.neighbor_id
+        track.push(point)
       end
     end
     track
@@ -176,31 +176,19 @@ class RouteReference
    node = Distance.where(point_id: point).count > 1
   end
 
-  def string_to_array(string) #дублируется, вынести в отдельный модуль
+  def no_repeat_track?(node_track_array, start_point, goal_point)
+    no_repeat_start = node_track_array.include?(neighbor_nodes(start_point)[0]) & node_track_array.include?(neighbor_nodes(start_point)[1])
+    no_repeat_goal = node_track_array.include?(neighbor_nodes(goal_point)[0]) & node_track_array.include?(neighbor_nodes(goal_point)[1])
+    !no_repeat_start & !no_repeat_goal
+  end
+
+  def string_to_array(string)
     string.delete! "["
     string.delete! "]"
     string = string.split(", ")
     array = []
     string.each do |l|
       array.push(l.to_i)
-    end
-    array
-  end
-
-  def clean(array, member)
-    while array.last != member && array.count > 0
-      array.pop
-    end
-    array
-  end
-
-  def filter(array)
-    array.each do |member|
-      (0..array.size-1).each do |i|
-        if member.index != i
-          array.delete_at(i) if array[i] == member
-        end
-      end
     end
     array
   end

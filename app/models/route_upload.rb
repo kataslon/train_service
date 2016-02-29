@@ -34,8 +34,8 @@ class RouteUpload < ActiveRecord::Base
         else
           point = Point.where(name: cont[0]).first
         end
-        Shedule.create(point_id: point.id, route_id: route_id, breack: cont[2], first_point: false, last_point: false) #исправить на break
-        if Distance.where(point_id: point.id, neighbor_id: neighbor.id).blank? & Distance.where(point_id: neighbor.id, neighbor_id: point.id).blank?
+        Shedule.create(point_id: point.id, route_id: route_id, breack: cont[2], first_point: false, last_point: false)
+        if Distance.where(point_id: point.id, neighbor_id: neighbor.id).blank?
           Distance.create(point_id: point.id, neighbor_id: neighbor.id, distance: (cont[4].to_i - distance))
         end
         neighbor = point
@@ -68,10 +68,12 @@ class RouteUpload < ActiveRecord::Base
       array_point     = []
       array_neighbor  = []
       Distance.pluck(:point_id, :neighbor_id).each do |distance|
-        points_array.push(distance[0]) if array_point.include?(distance[0])
-        neighbors_array.push(distance[1]) if array_neighbor.include?(distance[1])
-        array_point.push(distance[0])
-        array_neighbor.push(distance[1])
+        if Distance.where(point_id: distance[1], neighbor_id: distance[0]).first.blank?
+          points_array.push(distance[0]) if array_point.include?(distance[0])
+          neighbors_array.push(distance[1]) if array_neighbor.include?(distance[1])
+          array_point.push(distance[0])
+          array_neighbor.push(distance[1])
+        end
       end
       (points_array | neighbors_array).sort
     end
