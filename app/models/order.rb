@@ -1,4 +1,6 @@
 class Order < ActiveRecord::Base
+  has_many :tickets
+  accepts_nested_attributes_for :tickets, :allow_destroy => true
 
   def total_track
     total_track = []
@@ -53,6 +55,7 @@ class Order < ActiveRecord::Base
       total_time += point_data[:breack] if point_data[:breack] != nil
       point_data[:out_time] = total_time
       total_time += point_data[:distance].to_f / Route.find(route_id).speed.to_f * 3600
+      point_data[:route_id] = route_id
       route_shedule[track[index]] = point_data
     end
     point_data = {}
@@ -61,7 +64,6 @@ class Order < ActiveRecord::Base
     point_data[:total_distance] = total_distance
     point_data[:in_time] = total_time
     point_data[:breack] = Shedule.where(point_id: track[index], route_id: route_id).first.breack
-    point_data[:route_id] = route_id
     route_shedule[track[index]] = point_data
     route_shedule
   end

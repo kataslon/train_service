@@ -8,10 +8,21 @@
             <div class="input-group">
               <%= f.label :date %>
               <%= f.text_field :date, class: 'timepicker3' %>
+              <%= f.hidden_field :user_id, value: current_user if current_user %>
+              <%= f.hidden_field :start_point, value: @start_point %>
+              <%= f.hidden_field :goal_point, value: @goal_point %>
+              <%= f.hidden_field :nodes_array, value: @nodes_array %>
+              <%= f.hidden_field :track_array, value: @track_array %>
               <%= f.submit 'Купить билеты' %>
               <div>Суммарное растояние маршрута <%= @total_route_distance %></div>
-              <% @total_track.each do |part_track| %>
+              <% i = 0 %>
+              <%= f.fields_for :tickets do |ft| %>
+                <% part_track = @total_track[i] %>
+                <%= ft.hidden_field :route_id, value: part_track.first[1][:route_id] %>
+                <%= ft.hidden_field :start_point, value: part_track.first[1][:name] %>
+                <%= ft.hidden_field :finish_point, value: part_track[part_track.keys.last][:name] %>
                 <%= render 'train_shedule', part_track: part_track, f: f %>
+                <% i += 1 %>
               <% end %>
             </div>
           <% end %>

@@ -13,7 +13,9 @@ Rails.application.routes.draw do
   end
 
   resources :route_references
-  resources :orders
+  resources :orders do
+    resources :tickets
+  end
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
