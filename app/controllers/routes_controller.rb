@@ -21,6 +21,8 @@ class RoutesController < ::ApplicationController
   end
 
   def update
+    @route.update(route_params)
+    redirect_to routes_path
   end
 
   def destroy
@@ -38,7 +40,8 @@ class RoutesController < ::ApplicationController
     params.require(:route).permit(:name,
                                   :speed,
                                   :places_count,
-                                  :daparture,
+                                  :left_daparture,
+                                  :right_daparture,
                                   :tariff)
   end
 

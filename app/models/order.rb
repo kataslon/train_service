@@ -1,37 +1,18 @@
 class Order < ActiveRecord::Base
 
-  def travel_time
-    self.track.each do |point_id|
-      total_break += Point.find(point_id).break
-    end
-
-    self.nodes
-  end
-
-  def time_between_points(start_point, finish_point)
-    route_id = Shedule.where(point_id: point_id).first.route_id
-    time = Distance.where(neighbor_id: point) / Route.find(route_id).speed
-  end
-
-  def total_distance
-    track_points = self.track.pop
-    track_points.each do |point|
-      distance += Distance.where(neighbor_id: point).distance
-    end
-  end
-
-  def reserve_tickets#(route_parts_array, date)
+  def total_track
+    total_track = []
     route_parts.each do |route_part|
-      route_defining(route_part[0], route_part[1])
-      route_ticket(route_part[0], route_part[1], route_id, self.date)
+      total_track.push(route_shedule(route_part))
     end
+    total_track
   end
 
-  def route_parts#(track_array, nodes_array)
+  def route_parts
     part_points = []
     route_parts_array = []
-    part_points.push(track_array.first.to_i)
-    part_points.push(nodes_array.first.to_i)
+    part_points.push(string_to_array(track_array).first)
+    part_points.push(string_to_array(nodes_array).first)
     route_parts_array.push(part_points)
     array = string_to_array(nodes_array)
     (0..array.count-2).each do |i|
@@ -50,38 +31,67 @@ class Order < ActiveRecord::Base
   end
 
   def route_shedule(point_array)
+    track = reduce_array(string_to_array(track_array), point_array[0], point_array[1])
     route_id = route_defining(point_array[0], point_array[1])[0]
-    current_point = point_array[0]
     route_shedule = {}
-    next_point = current_point
-    point_data = {}
-    point_data[:name] = Point.find(current_point).name
     total_distance = 0
-    current_time = 0#Route.find(route_id).daparture
-    point_data[:out_time] = current_time
-    route_shedule[current_point] = point_data
-    while next_point != point_array[1] && !Shedule.where(route_id: route_id, point_id: next_point).first.last_point
-      point_data = {}
-      next_points = Distance.where(neighbor_id: current_point).pluck(:point_id)
-      next_points.each do |id|
-        if Shedule.where(point_id: id).first.route_id == route_id
-          next_point = Point.find(id).id
-        end
-        next_point = id if id == point_array[1]
-      end
-      point_data[:name] = Point.find(next_point).name
-      point_data[:distance] = Distance.where(neighbor_id: current_point, point_id: next_point).first.distance
-      total_distance += point_data[:distance]
-      point_data[:total_distance] = total_distance
-      current_time = point_data[:distance] / Route.find(route_id).speed
-      point_data[:in_time] = current_time
-      point_data[:breack] = Shedule.where(point_id: next_point, route_id: route_id).first.breack
-      # current_time += point_data[:breack] if point_data[:breack] != nil
-      point_data[:out_time] = current_time
-      route_shedule[next_point] = point_data
-      current_point = next_point
+    if Distance.where(point_id: track[0], neighbor_id: track[1]).first.blank?
+      i, j = 1, 0
+      total_time = travel_time_right(route_id, point_array[0])
+    else
+      i, j = 0, 1
+      total_time = travel_time_left(route_id, point_array[0])
     end
+    (0..track.count-2).each do |index|
+      point_data = {}
+      point_data[:name] = Point.find(track[index]).name
+      point_data[:distance] = Distance.where(point_id: track[index + i], neighbor_id: track[index + j]).first.distance
+      point_data[:total_distance] = total_distance
+      total_distance += point_data[:distance]
+      point_data[:in_time] = total_time
+      point_data[:breack] = Shedule.where(point_id: track[index], route_id: route_id).first.breack
+      total_time += point_data[:breack] if point_data[:breack] != nil
+      point_data[:out_time] = total_time
+      total_time += point_data[:distance].to_f / Route.find(route_id).speed.to_f * 3600
+      route_shedule[track[index]] = point_data
+    end
+    point_data = {}
+    index = track.count - 1
+    point_data[:name] = Point.find(track[-1]).name
+    point_data[:total_distance] = total_distance
+    point_data[:in_time] = total_time
+    point_data[:breack] = Shedule.where(point_id: track[index], route_id: route_id).first.breack
+    point_data[:route_id] = route_id
+    route_shedule[track[index]] = point_data
     route_shedule
+  end
+
+  def travel_time_right(route_id, point)
+    current_point = Shedule.where(route_id: route_id, last_point: true).first.point_id
+    travel_time = Route.find(route_id).right_daparture
+    speed = Route.find(route_id).speed
+    Distance.where(neighbor_id: current_point).pluck(:point_id).each do |id|
+      if Shedule.where(route_id: route_id).pluck(:point_id).include?(id)
+        distance = Distance.where(point_id: current_point, neighbor_id: id).distance
+        breack = Shedule.where(point_id: id, route_id: route_id).breack
+        travel_time += distance.to_f / speed.to_f * 3600 + breack
+      end
+    end
+    travel_time
+  end
+
+    def travel_time_left(route_id, point)
+    current_point = Shedule.where(route_id: route_id, first_point: true).first.point_id
+    travel_time = Route.find(route_id).left_daparture
+    speed = Route.find(route_id).speed
+    Distance.where(point_id: current_point).pluck(:neighbor_id).each do |id|
+      if Shedule.where(route_id: route_id).pluck(:neighbor_id).include?(id)
+        distance = Distance.where(neighbor_id: current_point, point_id: id).distance
+        breack = Shedule.where(point_id: id, route_id: route_id).breack
+        travel_time += distance.to_f / speed.to_f * 3600 + breack
+      end
+    end
+    travel_time
   end
 
   def route_defining(first_point, second_point)
@@ -109,6 +119,16 @@ class Order < ActiveRecord::Base
     array = []
     string.each do |l|
       array.push(l.to_i)
+    end
+    array
+  end
+
+  def reduce_array(array, first, second)
+    while array[0] != first
+      array.shift
+    end
+    while array[-1] != second
+      array.pop
     end
     array
   end

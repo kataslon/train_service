@@ -8,6 +8,12 @@ Rails.application.routes.draw do
   root 'route_references#new'
   # root 'routes#index'
 
+  resources :routes do
+    resources :route_uploads
+  end
+
+  resources :route_references
+  resources :orders
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
@@ -58,11 +64,5 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 
-  resources :routes do
-    resources :route_uploads
-  end
-
-  resources :route_references
-  resources :orders
 
 end
