@@ -39,10 +39,10 @@ class Order < ActiveRecord::Base
     total_distance = 0
     if Distance.where(point_id: track[0], neighbor_id: track[1]).first.blank?
       i, j = 1, 0
-      total_time = travel_time_right(route_id, point_array[0])
+      total_time = travel_time_left(route_id, point_array[0])
     else
       i, j = 0, 1
-      total_time = travel_time_left(route_id, point_array[0])
+      total_time = travel_time_right(route_id, point_array[0])
     end
     (0..track.count-2).each do |index|
       point_data = {}
@@ -72,11 +72,16 @@ class Order < ActiveRecord::Base
     current_point = Shedule.where(route_id: route_id, last_point: true).first.point_id
     travel_time = Route.find(route_id).right_daparture
     speed = Route.find(route_id).speed
-    Distance.where(neighbor_id: current_point).pluck(:point_id).each do |id|
-      if Shedule.where(route_id: route_id).pluck(:point_id).include?(id)
-        distance = Distance.where(point_id: current_point, neighbor_id: id).distance
-        breack = Shedule.where(point_id: id, route_id: route_id).breack
-        travel_time += distance.to_f / speed.to_f * 3600 + breack
+    while current_point != point
+      byebug
+      Distance.where(point_id: current_point).pluck(:neighbor_id).each do |id|
+        if Shedule.where(route_id: route_id).pluck(:point_id).include?(id)
+          byebug
+          distance = Distance.where(point_id: current_point, neighbor_id: id).first.distance
+          breack = Shedule.where(point_id: id, route_id: route_id).first.breack
+          travel_time += distance.to_f / speed.to_f * 3600 + breack
+          current_point = id
+        end
       end
     end
     travel_time
@@ -86,11 +91,14 @@ class Order < ActiveRecord::Base
     current_point = Shedule.where(route_id: route_id, first_point: true).first.point_id
     travel_time = Route.find(route_id).left_daparture
     speed = Route.find(route_id).speed
-    Distance.where(point_id: current_point).pluck(:neighbor_id).each do |id|
-      if Shedule.where(route_id: route_id).pluck(:neighbor_id).include?(id)
-        distance = Distance.where(neighbor_id: current_point, point_id: id).distance
-        breack = Shedule.where(point_id: id, route_id: route_id).breack
-        travel_time += distance.to_f / speed.to_f * 3600 + breack
+    while current_point != point
+      Distance.where(neighbor_id: current_point).pluck(:point_id).each do |id|
+        if Shedule.where(route_id: route_id).pluck(:point_id).include?(id)
+          distance = Distance.where(neighbor_id: current_point, point_id: id).first.distance
+          breack = Shedule.where(point_id: id, route_id: route_id).first.breack
+          travel_time += distance.to_f / speed.to_f * 3600 + breack
+          current_point = id
+        end
       end
     end
     travel_time
