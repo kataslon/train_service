@@ -10,7 +10,8 @@ class Route < ActiveRecord::Base
         if Shedule.where(route_id: self.id).pluck(:point_id).include?(id)
           distance = Distance.where(point_id: current_point, neighbor_id: id).first.distance
           breack = Shedule.where(point_id: id, route_id: self.id).first.breack
-          travel_time += distance.to_f / self.speed.to_f * 3600 + breack
+          travel_time += distance.to_f / self.speed.to_f * 3600
+          travel_time += breack if breack
           current_point = id
         end
       end
@@ -26,7 +27,8 @@ class Route < ActiveRecord::Base
         if Shedule.where(route_id: self.id).pluck(:point_id).include?(id)
           distance = Distance.where(neighbor_id: current_point, point_id: id).first.distance
           breack = Shedule.where(point_id: id, route_id: self.id).first.breack
-          travel_time += distance.to_f / self.speed.to_f * 3600 + breack
+          travel_time += distance.to_f / self.speed.to_f * 3600
+          travel_time += breack if breack
           current_point = id
         end
       end

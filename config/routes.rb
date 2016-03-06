@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   end
 
   resources :route_references
+  resources :points
   resources :orders do
     resources :tickets
   end
