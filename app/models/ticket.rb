@@ -1,4 +1,6 @@
 class Ticket < ActiveRecord::Base
+  belongs_to :order
+
   def cost
 
   end

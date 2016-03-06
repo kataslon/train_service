@@ -1,7 +1,7 @@
 <tr>
-  <th><%= point_shedule[:name] %></th>
-  <th><%= point_shedule[:in_time] %></th>
-  <th><%= point_shedule[:breack] %></th>
-  <th><%= point_shedule[:out_time] %></th>
-  <th><%= point_shedule[:total_distance] %></th>
+  <td><%= link_to point_shedule[:name], point_path(Point.where(name: point_shedule[:name]).first.id) %></td>
+  <td><%= time(point_shedule[:in_time]) %></td>
+  <td><%= minutes(point_shedule[:breack]) %></td>
+  <td><%= time(point_shedule[:out_time]) %></td>
+  <td><%= point_shedule[:total_distance] %></td>
 </tr>

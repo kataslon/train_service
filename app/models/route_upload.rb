@@ -5,7 +5,6 @@ class RouteUpload < ActiveRecord::Base
 
   attr_accessor :route_id
 
-   # after :store, :create_routes
    before_save :create_routes
 
   protected
@@ -25,7 +24,7 @@ class RouteUpload < ActiveRecord::Base
       else
         neighbor = Point.where(name: content[0][0]).first
       end
-      Shedule.create(point_id: neighbor.id, route_id: route_id, breack: content[0][2], first_point: true, last_point: false)
+      Shedule.create(point_id: neighbor.id, route_id: route_id, first_point: true, last_point: false)
       distance = content[0][4].to_i
       content.shift
       content.each do |cont|
@@ -34,7 +33,7 @@ class RouteUpload < ActiveRecord::Base
         else
           point = Point.where(name: cont[0]).first
         end
-        Shedule.create(point_id: point.id, route_id: route_id, breack: cont[2], first_point: false, last_point: false)
+        Shedule.create(point_id: point.id, route_id: route_id, breack: string_to_seconds(cont[2]), first_point: false, last_point: false)
         if Distance.where(point_id: point.id, neighbor_id: neighbor.id).blank?
           Distance.create(point_id: point.id, neighbor_id: neighbor.id, distance: (cont[4].to_i - distance))
         end
@@ -138,5 +137,12 @@ class RouteUpload < ActiveRecord::Base
         array.push(l.to_i)
       end
       array
+    end
+
+    def string_to_seconds(string)
+      if string
+        string = string.split(":")
+        seconds = string[0].to_i * 3600 + string[1].to_i * 60
+      end
     end
 end

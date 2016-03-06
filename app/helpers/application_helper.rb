@@ -12,4 +12,17 @@ module ApplicationHelper
     Point.find(id).name
   end
 
+  def minutes(seconds)
+    if seconds != nil
+      minutes = seconds / 60
+      "#{minutes} мин"
+    end
+  end
+
+  def time(time_utc)
+    if time_utc != nil
+      time_utc.strftime("%H:%M")
+    end
+  end
+
 end
