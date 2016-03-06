@@ -21,12 +21,17 @@ class OrdersController < ::ApplicationController
 
   def create
     order = Order.create(order_params)
-    redirect_to new_route_reference_url
+    redirect_to order_url(order)
   end
 
-  def update
-    @order.update_params()
-    @order.reserve_tickets()
+  def show
+    @order = Order.find(params[:id])
+  end
+
+  def destroy
+    @order = Order.find(params[:id])
+    @order.destroy
+    redirect_to new_route_reference_path
   end
 
 protected

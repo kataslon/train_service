@@ -1,7 +1,0 @@
-<div class="page-header">
-  <h1>Маршрут</h1>
-</div>
-
-<% @order.route_parts.each do |route_part| %>
-  <%= render 'train_shedule', route_shedule: @order.route_shedule(route_part), route_part: route_part %>
-<% end %>

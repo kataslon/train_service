@@ -1,0 +1,23 @@
+<div class="page-header">
+  <h1>Билеты</h1>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Дата</th>
+            <th>Пункт посадки</th>
+            <th>Пункт высадки</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= render @order.tickets %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <%= link_to 'Back', new_route_reference_path %>
+  <%= link_to 'Delete', order_path(@order), method: :delete %>
+</div>
