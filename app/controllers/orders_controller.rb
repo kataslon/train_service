@@ -23,6 +23,7 @@ class OrdersController < ::ApplicationController
 
   def create
     order = Order.create(order_params)
+    UserMailer.order_email(User.find(order.user_id)).deliver_later
     redirect_to order_url(order)
   end
 
@@ -35,8 +36,9 @@ class OrdersController < ::ApplicationController
   end
 
   def destroy
-    @order = Order.find(params[:id])
-    @order.destroy
+    order = Order.find(params[:id])
+    UserMailer.delete_order_email(User.find(order.user_id)).deliver_later
+    order.destroy
     redirect_to orders_url
   end
 
