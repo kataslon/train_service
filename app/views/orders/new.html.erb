@@ -19,8 +19,8 @@
               <%= f.fields_for :tickets do |ft| %>
                 <% part_track = @total_track[i] %>
                 <%= ft.hidden_field :route_id, value: part_track.first[1][:route_id] %>
-                <%= ft.hidden_field :start_point, value: part_track.first[1][:name] %>
-                <%= ft.hidden_field :finish_point, value: part_track[part_track.keys.last][:name] %>
+                <%= ft.hidden_field :start_point, value: part_track.first[1][:id] %>
+                <%= ft.hidden_field :finish_point, value: part_track[part_track.keys.last][:id] %>
                 <%= render 'train_shedule', part_track: part_track, f: f %>
                 <% i += 1 %>
               <% end %>

@@ -47,6 +47,7 @@ class Order < ActiveRecord::Base
     (0..track.count-2).each do |index|
       point_data = {}
       point_data[:name] = Point.find(track[index]).name
+      point_data[:id] = track[index]
       point_data[:distance] = Distance.where(point_id: track[index + i], neighbor_id: track[index + j]).first.distance
       point_data[:total_distance] = total_distance
       total_distance += point_data[:distance]
@@ -61,6 +62,7 @@ class Order < ActiveRecord::Base
     point_data = {}
     index = track.count - 1
     point_data[:name] = Point.find(track[-1]).name
+    point_data[:id] = track[-1]
     point_data[:total_distance] = total_distance
     point_data[:in_time] = total_time
     point_data[:breack] = Shedule.where(point_id: track[index], route_id: route_id).first.breack
