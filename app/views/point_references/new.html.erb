@@ -1,0 +1,5 @@
+<%= form_for @point_reference, method: :get do |f| %>
+  <%= f.label 'Выбрать ЖД станцию' %>
+  <%= f.select :point, Point.all.map { |point| [point.name, point.id] }.sort, {} %>
+  <%= f.submit %>
+<% end %>

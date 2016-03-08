@@ -1,5 +1,5 @@
 <div class="page-header">
-  <h1>Рассписание <%= @point.name %></h1>
+  <h1>Рассписание <%= point_name(@point_reference.point) %></h1>
 </div>
 <div class="container">
   <div class="row">
@@ -14,7 +14,7 @@
           </tr>
         </thead>
         <tbody>
-          <% @train_shedule.each do |shedule| %>
+          <% @point_shedule.each do |shedule| %>
             <%= render 'shedule_row', shedule: shedule %>
           <% end %>
         </tbody>
