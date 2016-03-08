@@ -1,24 +1,29 @@
-<h1>Listing Routes</h1>
-
-<div class="table-responsive">
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Name</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <% @routes.each do |route| %>
-        <tr>
-          <td><%= route.name %></td>
-          <td><%= link_to 'Show', route_path(route) %></td>
-          <td><%= link_to 'Edit', edit_route_path(route) %></td>
-          <td><%= link_to 'Destroy', route_path(route), method: :delete, data: { confirm: 'Are you sure?' } %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+<div class="page-header">
+  <h1>Список маршрутов</h1>
 </div>
-        <td><%= link_to 'New', new_route_path %></td>
+<div class="container">
+  <div class="row">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @routes.each do |route| %>
+            <tr>
+              <td><%= route.name %></td>
+              <td><%= link_to 'Show', route_path(route) %></td>
+              <td><%= link_to 'Edit', edit_route_path(route) %></td>
+              <td><%= link_to 'Destroy', route_path(route), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+            <td><%= link_to 'New', new_route_path %></td>
+  </div>
+</div>
 

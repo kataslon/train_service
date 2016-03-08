@@ -1,0 +1,9 @@
+<tr>
+  <td><%= order.user_id %></td>
+  <td><%= point_name(order.start_point) %></td>
+  <td><%= point_name(order.goal_point) %></td>
+  <td><%= order.date %></td>
+  <td><%= link_to 'Show', order_path(order) %></td>
+  <td><%= link_to 'Delete', order_path(order), method: :delete, data: { confirm: "Are you shure?" } %></td>
+  </td>
+</tr>

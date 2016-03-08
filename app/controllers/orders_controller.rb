@@ -1,5 +1,7 @@
 class OrdersController < ::ApplicationController
 
+  before_action :authenticate_user!
+
   def new
     @order = Order.new(order_params)
     @user = current_user
@@ -28,10 +30,14 @@ class OrdersController < ::ApplicationController
     @order = Order.find(params[:id])
   end
 
+  def index
+    @orders = Order.all if current_user.admin
+  end
+
   def destroy
     @order = Order.find(params[:id])
     @order.destroy
-    redirect_to new_route_reference_path
+    redirect_to orders_url
   end
 
 protected

@@ -4,7 +4,7 @@
    Станции пересадок: <%= route_points(route[1][0]) %></br>
    <%= route_points(route[1][1]) %>
   <%= form_for @order, method: :get, url: new_order_path do |f| %>
-    <%= f.hidden_field :user_id, value: current_user %>
+    <%= f.hidden_field :user_id, value: current_user.id if current_user%>
     <%= f.hidden_field :start_point, value: @routes.start_point %>
     <%= f.hidden_field :goal_point, value: @routes.goal_point %>
     <%= f.hidden_field :nodes_array, value: route[1][0] %>
