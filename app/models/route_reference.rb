@@ -17,20 +17,30 @@ class RouteReference
       start_track = []
       start_track = start_track + track_build(start_point, start_node)
       neighbor_nodes(goal_point).each do |goal_node|
-        PossibleWay.where(point_id: start_node, target_point: goal_node).each do |node_track|
-          node_track_array = string_to_array(node_track.track_array)
-          if no_repeat_track?(node_track_array, start_point, goal_point)
-            track = []
-            route_array = []
-            route_array.push(string_to_array(node_track.track_array))
-            track_between_nodes = []
-            (1..node_track_array.count-1).each do |i|
-                track_between_nodes.push(track_build(node_track_array[i - 1], node_track_array[i]))
+        if start_node == goal_node
+          route_array = []
+          track_between_nodes = []
+          route_array.push([goal_node])
+          track_between_nodes.push(track_build(goal_node, goal_point)).uniq
+          total_track = (start_track + track_between_nodes).flatten.uniq
+          route_array.push(total_track)
+          tracks[goal_point] = route_array
+        else
+          PossibleWay.where(point_id: start_node, target_point: goal_node).each do |node_track|
+            node_track_array = string_to_array(node_track.track_array)
+            if no_repeat_track?(node_track_array, start_point, goal_point)
+              track = []
+              route_array = []
+              route_array.push(string_to_array(node_track.track_array))
+              track_between_nodes = []
+              (1..node_track_array.count-1).each do |i|
+                  track_between_nodes.push(track_build(node_track_array[i - 1], node_track_array[i]))
+              end
+              track_between_nodes.push(track_build(goal_node, goal_point)).uniq
+              total_track = (start_track + track + track_between_nodes).flatten.uniq
+              route_array.push(total_track)
+              tracks[node_track.id] = route_array
             end
-            track_between_nodes.push(track_build(goal_node, goal_point)).uniq
-            total_track = (start_track + track + track_between_nodes).flatten.uniq
-            route_array.push(total_track)
-            tracks[node_track.id] = route_array
           end
         end
       end
@@ -52,6 +62,7 @@ class RouteReference
   def track_build(start_point, goal_point)
     track = go_round_neighbors(start_point, goal_point)
     if track != [] && track.include?(goal_point)
+
       track
     else
       track = go_round_points(start_point, goal_point)
@@ -60,6 +71,10 @@ class RouteReference
       end
     end
   end
+
+  # def mutual_road(start_point, goal_point)
+
+  # end
 
   def belongs_to_same_rout?(current_point, goal_point)
     routes = Shedule.where(point_id: goal_point).pluck(:route_id)
@@ -130,13 +145,17 @@ class RouteReference
 
   def neighbor_nodes(point)
     array = point_position_array(point)
-    if array.first == point
-      start_nodes_array = [array[1]]
-    elsif array.last == point
-      start_nodes_array = [array[-2]]
+    if !Node.where(point_id: point).blank?
+      start_nodes_array = [point]
     else
-      index = array.index(point)
-      start_nodes_array = [ array[index - 1], array[index + 1] ]
+      if array.first == point
+        start_nodes_array = [array[1]]
+      elsif array.last == point
+        start_nodes_array = [array[-2]]
+      else
+        index = array.index(point)
+        start_nodes_array = [ array[index - 1], array[index + 1] ]
+      end
     end
   end
 
