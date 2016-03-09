@@ -36,7 +36,7 @@ class RouteReference
               (1..node_track_array.count-1).each do |i|
                   track_between_nodes.push(track_build(node_track_array[i - 1], node_track_array[i]))
               end
-              track_between_nodes.push(track_build(goal_node, goal_point)).uniq
+              track_between_nodes.push(track_build(goal_node, goal_point)).uniq if goal_node != goal_point
               total_track = (start_track + track + track_between_nodes).flatten.uniq
               route_array.push(total_track)
               tracks[node_track.id] = route_array
@@ -71,10 +71,6 @@ class RouteReference
       end
     end
   end
-
-  # def mutual_road(start_point, goal_point)
-
-  # end
 
   def belongs_to_same_rout?(current_point, goal_point)
     routes = Shedule.where(point_id: goal_point).pluck(:route_id)
