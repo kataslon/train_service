@@ -1,14 +1,37 @@
+<div class="page-header">
+  <h1>Варианты маршрутов</h1>
+</div>
+
 </br>Пункт отправки : <%= point_name(@routes.start_point) %></br>
 Пункт назначения : <%= point_name(@routes.goal_point) %></br></br>
-<% @route_references.each do |route| %>
-   Станции пересадок: <%= route_points(route[1][0]) %></br>
-   <%= route_points(route[1][1]) %>
-  <%= form_for @order, method: :get, url: new_order_path do |f| %>
-    <%= f.hidden_field :user_id, value: current_user.id if current_user%>
-    <%= f.hidden_field :start_point, value: @routes.start_point %>
-    <%= f.hidden_field :goal_point, value: @routes.goal_point %>
-    <%= f.hidden_field :nodes_array, value: route[1][0] %>
-    <%= f.hidden_field :track_array, value: route[1][1] %>
-    <%= f.submit 'Посмотреть маршрут' %>
-  <% end %>
-<% end %>
+<div class="container">
+  <div class="row">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Станции пересадок</th>
+            <th>Маршрут</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @route_references.each do |route| %>
+            <tr>
+              <td><%= route_points(route[1][0]) %></td>
+              <td><%= route_points(route[1][1]) %></td>
+              <%= form_for @order, method: :get, url: new_order_path do |f| %>
+                  <%= f.hidden_field :user_id, value: current_user.id if current_user%>
+                  <%= f.hidden_field :start_point, value: @routes.start_point %>
+                  <%= f.hidden_field :goal_point, value: @routes.goal_point %>
+                  <%= f.hidden_field :nodes_array, value: route[1][0] %>
+                  <%= f.hidden_field :track_array, value: route[1][1] %>
+                  <td><%= f.submit 'Посмотреть маршрут' %></td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

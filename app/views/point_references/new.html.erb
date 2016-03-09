@@ -1,5 +1,15 @@
-<%= form_for @point_reference, method: :get do |f| %>
-  <%= f.label 'Выбрать ЖД станцию' %>
-  <%= f.select :point, Point.all.map { |point| [point.name, point.id] }.sort, {} %>
-  <%= f.submit %>
-<% end %>
+<div class="container">
+  <div class="starter-template">
+    <div class="row">
+      <%= form_for @point_reference, method: :get do |f| %>
+        <div class="input-group point-form">
+          <%= f.label 'Выбрать ЖД станцию' %>
+          <%= f.select :point, Point.all.map { |point| [point.name, point.id] }.sort, {}, :class => "form-control point" %>
+        </div>
+        <div class="btn-point">
+          <%= f.submit 'Посмотреть расписание', :class => 'btn' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

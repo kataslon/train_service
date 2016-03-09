@@ -1,7 +1,21 @@
-<%= form_for @route_references, method: :get do |f| %>
-  <%= f.label 'Пункт отправки' %>
-  <%= f.select :start_point, Point.all.map { |point| [point.name, point.id] }.sort, {} %>
-  <%= f.label 'Пункт назначения' %>
-  <%= f.select :goal_point, Point.all.map { |point| [point.name, point.id] }.sort, {} %>
-  <%= f.submit 'ok' %>
-<% end %>
+<div class="row">
+  <%= form_for @route_references, method: :get do |f| %>
+    <div class="col-lg-6">
+      <div class="input-group">
+        <%= f.label 'Пункт отправки' %>
+        <%= f.select :start_point, Point.all.map { |point| [point.name, point.id] }.sort, {}, :class => "form-control" %>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="input-group">
+        <%= f.label 'Пункт назначения' %>
+        <%= f.select :goal_point, Point.all.map { |point| [point.name, point.id] }.sort, {}, :class => "form-control" %>
+      </div>
+    </div>
+    <div class="col-lg-12 btn-route">
+      <%= f.submit 'Посмотреть возможные маршруты', :class => 'btn' %>
+    </div>
+  <% end %>
+</div>
+
+

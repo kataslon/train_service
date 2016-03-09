@@ -6,8 +6,6 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'route_references#new'
-  # root 'routes#index'
-  # root 'points#new_point_shedule'
 
   resources :routes do
     resources :route_uploads
@@ -15,8 +13,6 @@ Rails.application.routes.draw do
 
   resources :route_references
   resources :point_references
-  # resources :points
-  get 'points/new_point_shedule', to: 'points#new_point_shedule', as: :new_point_shedule
   resources :orders do
     resources :tickets
   end

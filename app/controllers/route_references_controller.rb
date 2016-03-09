@@ -9,6 +9,7 @@ class RouteReferencesController < ::ApplicationController
   end
 
   def index
+    redirect_to new_route_reference_url if params[:route_reference][:start_point] == params[:route_reference][:goal_point]
     @routes = RouteReference.new(reference_params)
     @route_references = @routes.prepare_routes
     @order = Order.new
