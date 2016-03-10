@@ -14,8 +14,7 @@ class RouteReference
     tracks = {}
     tracks[0] = track if track
     neighbor_nodes(start_point).each do |start_node|
-      start_track = []
-      start_track = start_track + track_build(start_point, start_node)
+      start_track = track_build(start_point, start_node)
       neighbor_nodes(goal_point).each do |goal_node|
         if start_node == goal_node
           route_array = []
@@ -28,7 +27,7 @@ class RouteReference
         else
           PossibleWay.where(point_id: start_node, target_point: goal_node).each do |node_track|
             node_track_array = string_to_array(node_track.track_array)
-            if no_repeat_track?(node_track_array, start_point, goal_point)
+            unless repeat_track?(node_track_array, goal_point)
               track = []
               route_array = []
               route_array.push(string_to_array(node_track.track_array))
@@ -191,10 +190,14 @@ class RouteReference
    node = Distance.where(point_id: point).count > 1
   end
 
-  def no_repeat_track?(node_track_array, start_point, goal_point)
-    no_repeat_start = node_track_array.include?(neighbor_nodes(start_point)[0]) & node_track_array.include?(neighbor_nodes(start_point)[1])
-    no_repeat_goal = node_track_array.include?(neighbor_nodes(goal_point)[0]) & node_track_array.include?(neighbor_nodes(goal_point)[1])
-    !no_repeat_start & !no_repeat_goal
+  def repeat_track?(node_track_array, goal_point)
+    array_start = [node_track_array[0], node_track_array[1]]
+    array_goal = [node_track_array[-2], node_track_array[-1]]
+    nodes_start = neighbor_nodes(start_point)
+    nodes_goal = neighbor_nodes(goal_point)
+    no_repeat_start = array_start.include?(nodes_start[0]) & array_start.include?(nodes_start[1])
+    no_repeat_goal = array_goal.include?(nodes_goal[0]) & array_goal.include?(nodes_goal[1])
+    no_repeat_start | no_repeat_goal
   end
 
   def string_to_array(string)
