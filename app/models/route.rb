@@ -2,6 +2,13 @@ class Route < ActiveRecord::Base
   has_one :route_upload
   has_many :shedules
 
+  validates :name, presence: true
+  validates :speed, presence: true, numericality: { greater_than: 0 }
+  validates :places_count, presence: true, numericality: { greater_than: 0 }
+  validates :left_daparture, presence: true
+  validates :right_daparture, presence: true
+  validates :tariff, presence: true, numericality: { greater_than: 0 }
+
   def travel_time_right(point)
     current_point = Shedule.where(route_id: self.id, last_point: true).first.point_id
     travel_time = self.right_daparture
