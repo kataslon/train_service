@@ -1,43 +1,54 @@
-        <div class='col-sm-6'>
-            <div class="form-group">
-            <div class='input-group date'>
-                  <%= form_for @route do |route| %>
-                    <div class="input-group">
-                      <%= route.label :name %>
-                      <%= route.text_field :name %>
-                    </div>
-                    <div class="input-group">
-                      <%= route.label :speed %>
-                      <%= route.text_field :speed %>
-                    </div>
-                    <div class="input-group">
-                      <%= route.label :places_count %>
-                      <%= route.text_field :places_count %>
-                    </div>
-                    <div class="input-group">
-                      <%= route.label :left_daparture %>
-                      <%= route.text_field :left_daparture, class: 'timepicker3', value: @route.left_daparture %>
-                    </div>
-                    <div class="input-group">
-                      <%= route.label :right_daparture %>
-                      <%= route.text_field :right_daparture, class: 'timepicker3' %>
-                    </div>
-                    <div class="input-group">
-                      <%= route.label :tariff %>
-                      <%= route.text_field :tariff %>
-                    </div>
-                    <div class="input-group">
-                      <%= route.submit %>
-                    </div>
+<div class='col-sm-6'>
+    <div class="form-group">
+    <div class='input-group date'>
+          <%= form_for @route do |route| %>
+            <% if @route.errors.any? %>
+              <div id="error_explanation">
+                <h2><%= pluralize(@route.errors.count, "error") %>
+                prohibited this route from being saved:</h2>
+                <ul>
+                  <% @route.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
                   <% end %>
+                </ul>
+              </div>
+            <% end %>
+            <div class="input-group">
+              <%= route.label :name %>
+              <%= route.text_field :name %>
             </div>
+            <div class="input-group">
+              <%= route.label :speed %>
+              <%= route.text_field :speed %>
             </div>
-        </div>
-        <script type="text/javascript">
-            $(function () {
-                $('.timepicker3').datetimepicker({
-                    format: 'LT'
-                });
-            });
-        </script>
+            <div class="input-group">
+              <%= route.label :places_count %>
+              <%= route.text_field :places_count %>
+            </div>
+            <div class="input-group">
+              <%= route.label :left_daparture %>
+              <%= route.text_field :left_daparture, class: 'timepicker3', value: @route.left_daparture %>
+            </div>
+            <div class="input-group">
+              <%= route.label :right_daparture %>
+              <%= route.text_field :right_daparture, class: 'timepicker3' %>
+            </div>
+            <div class="input-group">
+              <%= route.label :tariff %>
+              <%= route.text_field :tariff %>
+            </div>
+            <div class="input-group">
+              <%= route.submit %>
+            </div>
+          <% end %>
+    </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('.timepicker3').datetimepicker({
+            format: 'LT'
+        });
+    });
+</script>
 

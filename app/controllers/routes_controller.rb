@@ -13,8 +13,14 @@ class RoutesController < ::ApplicationController
   end
 
   def create
-    @route = Route.create(route_params)
-    redirect_to routes_path
+    @route = Route.new(route_params)
+    respond_to do |format|
+      if @route.save
+        format.html { redirect_to routes_path }
+      else
+        format.html { render :new }
+      end
+    end
   end
 
   def edit
