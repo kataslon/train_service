@@ -1,9 +1,6 @@
 class RoutesController < ::ApplicationController
   before_action :set_route, only: [:show, :edit, :update, :destroy]
 
-  def show
-  end
-
   def index
     @routes = Route.all
   end
@@ -24,11 +21,18 @@ class RoutesController < ::ApplicationController
   end
 
   def edit
+    
   end
 
   def update
     @route.update(route_params)
-    redirect_to routes_path
+    respond_to do |format|
+      if @route.save
+        format.html { redirect_to routes_path }
+      else
+        format.html { render :edit }
+      end
+    end
   end
 
   def destroy
