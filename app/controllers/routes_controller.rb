@@ -1,4 +1,5 @@
 class RoutesController < ::ApplicationController
+  before_action :authenticate_user!
   before_action :set_route, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -21,7 +22,6 @@ class RoutesController < ::ApplicationController
   end
 
   def edit
-    
   end
 
   def update
