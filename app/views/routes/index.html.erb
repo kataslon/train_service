@@ -1,6 +1,7 @@
 <div class="page-header">
   <h1>Список маршрутов</h1>
 </div>
+<p id="notice"><%= notice %></p>
 <div class="container">
   <div class="row">
     <div class="table-responsive">
@@ -15,7 +16,6 @@
           <% @routes.each do |route| %>
             <tr>
               <td><%= route.name %></td>
-              <td><%= link_to 'Show', route_path(route) %></td>
               <td><%= link_to 'Edit', edit_route_path(route) %></td>
               <td><%= link_to 'Destroy', route_path(route), method: :delete, data: { confirm: 'Are you sure?' } %></td>
             </tr>

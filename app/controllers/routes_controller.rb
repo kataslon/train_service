@@ -1,8 +1,6 @@
 class RoutesController < ::ApplicationController
+  before_action :authenticate_user!
   before_action :set_route, only: [:show, :edit, :update, :destroy]
-
-  def show
-  end
 
   def index
     @routes = Route.all
@@ -13,8 +11,14 @@ class RoutesController < ::ApplicationController
   end
 
   def create
-    @route = Route.create(route_params)
-    redirect_to routes_path
+    @route = Route.new(route_params)
+    respond_to do |format|
+      if @route.save
+        format.html { redirect_to routes_path }
+      else
+        format.html { render :new }
+      end
+    end
   end
 
   def edit
@@ -22,7 +26,13 @@ class RoutesController < ::ApplicationController
 
   def update
     @route.update(route_params)
-    redirect_to routes_path
+    respond_to do |format|
+      if @route.save
+        format.html { redirect_to routes_path }
+      else
+        format.html { render :edit }
+      end
+    end
   end
 
   def destroy

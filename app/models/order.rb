@@ -1,6 +1,13 @@
 class Order < ActiveRecord::Base
   has_many :tickets
-  accepts_nested_attributes_for :tickets, :allow_destroy => true
+  accepts_nested_attributes_for :tickets, allow_destroy: true
+
+  validates :user_id,     presence: true
+  validates :start_point, presence: true
+  validates :goal_point , presence: true
+  validates :date,        presence: true
+  validates :nodes_array, presence: true
+  validates :track_array, presence: true
 
   def total_track
     total_track = []
